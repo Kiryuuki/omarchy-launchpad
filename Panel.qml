@@ -20,6 +20,9 @@ Panel {
   readonly property color bg: Color.popups.background
   readonly property string fontFam: bar ? bar.fontFamily : Style.font.family
 
+  readonly property int panelWidth: Style.space(340)
+  readonly property int panelHeight: Math.min(Style.space(500), Style.space(30) + Math.max(0, panelRoot.allApps.length) * Style.space(52) + Style.space(60))
+
   // ---- data ----
   property var allApps: []          // [{id,name,command}]
   property var currentEntries: []   // [{match,command,workspace,launchAtBoot}]
@@ -166,8 +169,8 @@ Panel {
   }
 
   // ---- UI ----
-  function open() { panelController.show() }
-  function close() { panelController.hide() }
+  function open() { panelRoot.controller.show() }
+  function close() { panelRoot.controller.hide() }
   function toggle() { panelRoot.opened ? panelRoot.close() : panelRoot.open() }
 
   Component.onCompleted: {
@@ -189,8 +192,6 @@ Panel {
       Text {
         text: "Launchpad"
         color: panelRoot.fg
-        font.family: panelRoot.fontFam
-        font.pixelSize: Style.font.body
         font.bold: true
       }
 
@@ -241,8 +242,6 @@ Panel {
                   Layout.fillWidth: true
                   text: modelData.name
                   color: panelRoot.fg
-                  font.family: panelRoot.fontFam
-                  font.pixelSize: Style.font.bodySmall
                   elide: Text.ElideRight
                 }
 
@@ -312,8 +311,6 @@ Panel {
         id: statusLabel
         text: panelRoot.statusText
         color: Qt.darker(panelRoot.fg, 1.3)
-        font.family: panelRoot.fontFam
-        font.pixelSize: Style.font.caption
         visible: !!text
       }
 

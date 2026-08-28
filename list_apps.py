@@ -14,23 +14,27 @@ import sys
 def _parse_desktop(path: str):
     cp = configparser.ConfigParser(interpolation=None)
     try:
-        cp.read(path, encoding="utf-8", errors="replace")
-    except Exception:
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            cp.read_file(fh)
+    except (OSError, configparser.Error):
         return None
-    sec = cp["Desktop Entry"] if "Desktop Entry" in cp else (
-        cp[cp.sections()[0]] if cp.sections() else None
-    )
+    sec = None
+    for section in ["Desktop Entry", "Desktop Action"]:
+        if section in cp:
+            sec = cp[section]
+            break
+    if sec is None and cp.sections():
+        sec = cp[cp.sections()[0]]
     if sec is None:
         return None
-    name = sec.get("Name", "")
+    name = sec.get("Name", "").strip()
     no_display = sec.get("NoDisplay", "false").strip().lower()
     if not name or no_display == "true":
         return None
-    exec_val = sec.get("Exec", "")
-    # Strip field codes (%u, %f, etc.) to get a usable command stem.
+    exec_val = sec.get("Exec", "").strip()
     if "%" in exec_val:
         exec_val = exec_val.split("%")[0].strip()
-    return {"id": os.path.basename(path), "name": name.strip(), "command": exec_val.strip()}
+    return {"id": os.path.basename(path), "name": name, "command": exec_val}
 
 
 def main() -> None:
@@ -43,7 +47,11 @@ def main() -> None:
     for directory in dirs:
         if not os.path.isdir(directory):
             continue
-        for entry in os.listdir(directory):
+        try:
+            entries = os.listdir(directory)
+        except OSError:
+            continue
+        for entry in entries:
             if not entry.endswith(".desktop"):
                 continue
             path = os.path.join(directory, entry)
