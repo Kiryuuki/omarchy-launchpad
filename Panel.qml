@@ -20,8 +20,11 @@ Panel {
   readonly property color bg: Color.popups.background
   readonly property string fontFam: bar ? bar.fontFamily : Style.font.family
 
-  readonly property int panelWidth: Style.space(340)
-  readonly property int panelHeight: Math.min(Style.space(500), Style.space(30) + Math.max(0, panelRoot.allApps.length) * Style.space(52) + Style.space(60))
+  // The Panel base is an Item with no implicit size; give the popup a real
+  // size so the controller can anchor and render it. Without this the panel
+  // collapses to 0x0 and appears to do nothing when opened.
+  implicitWidth: Style.space(340)
+  implicitHeight: Math.min(Style.space(520), Style.space(60) + Math.max(1, panelRoot.allApps.length) * Style.space(52) + Style.space(90))
 
   // ---- data ----
   property var allApps: []          // [{id,name,command}]
