@@ -14,8 +14,6 @@ BarWidget {
   property bool menuOpen: false
   property var entries: []
 
-  // Give the bar a real size so the widget is visible (working widgets bind
-  // implicitWidth/Height to the button).
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
@@ -31,6 +29,14 @@ BarWidget {
 
   function reloadRules() {
     applyProc.running = true
+  }
+
+  function openPanel() {
+    if (panelLoader.item) panelLoader.item.open()
+  }
+
+  function togglePanel() {
+    if (panelLoader.item) panelLoader.item.toggle()
   }
 
   Component.onCompleted: refreshConfig()
@@ -66,8 +72,17 @@ BarWidget {
     tooltipText: "Launchpad: app workspace manager"
     onPressed: function(b) {
       if (b === Qt.RightButton) return
-      root.menuOpen = !root.menuOpen
+      root.togglePanel()
     }
+  }
+
+  Loader {
+    id: panelLoader
+    active: true
+    source: Qt.resolvedUrl("Panel.qml")
+    onLoaded: Qt.callLater(function() {
+      if (panelLoader.item && typeof panelLoader.item.injectPanel === "function") panelLoader.item.injectPanel()
+    })
   }
 
   PopupCard {
@@ -75,7 +90,7 @@ BarWidget {
     anchorItem: root
     owner: root
     bar: root.bar
-    open: root.menuOpen
+    open: root.menuOpen && !panelLoader.item || !panelLoader.item.opened
     contentWidth: menu.fittedContentWidth(Style.space(260))
     contentHeight: menu.fittedContentHeight(menuCol.implicitHeight)
 
@@ -98,7 +113,7 @@ BarWidget {
 
       Text {
         visible: root.entries.length === 0
-        text: "No apps configured.\nEdit ~/.config/omarchy/launchpad.json"
+        text: "No apps configured.\nUse the settings panel to add apps."
         color: Qt.darker(root.fg, 1.5)
         font.family: root.fontFam
         font.pixelSize: Style.font.caption
@@ -141,6 +156,19 @@ BarWidget {
               root.menuOpen = false
             }
           }
+        }
+      }
+
+      Button {
+        text: "Open settings"
+        foreground: root.fg
+        fontFamily: root.fontFam
+        horizontalPadding: 8
+        verticalPadding: 4
+        fontSize: Style.font.bodySmall
+        onClicked: {
+          root.menuOpen = false
+          Qt.callLater(root.openPanel)
         }
       }
 
