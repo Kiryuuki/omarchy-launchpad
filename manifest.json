@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "yuuki.launchpad",
+  "name": "Launchpad",
+  "version": "1.0.0",
+  "author": "yuuki",
+  "license": "MIT",
+  "description": "Declaratively pin apps to workspaces and auto-launch them at boot, driven by ~/.config/omarchy/launchpad.json.",
+  "kinds": ["service", "bar-widget"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Launchpad",
+    "description": "App workspace manager and launcher",
+    "category": "Tools",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

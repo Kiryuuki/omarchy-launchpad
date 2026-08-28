@@ -1,0 +1,9 @@
+#!/bin/bash
+# Omarchy post-boot hook: apply Launchpad app->workspace rules at desktop start.
+# Runs after the desktop comes up. Idempotent; safe if the plugin is disabled
+# (the generator no-ops when ~/.config/omarchy/launchpad.json is absent).
+PLUGIN_DIR="$HOME/.config/omarchy/plugins/yuuki.launchpad"
+GENERATOR="$PLUGIN_DIR/scripts/generate.py"
+if [ -x "$PLUGIN_DIR/scripts/generate.py" ]; then
+  /usr/bin/python3 "$GENERATOR" || true
+fi

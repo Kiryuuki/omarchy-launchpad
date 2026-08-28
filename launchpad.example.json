@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "herdr",
+      "match": "herdr",
+      "workspace": 2,
+      "launchAtBoot": true,
+      "command": "herdr"
+    },
+    {
+      "id": "zen",
+      "match": "zen",
+      "workspace": 1,
+      "launchAtBoot": true,
+      "command": "zen-browser"
+    },
+    {
+      "id": "terminal",
+      "match": "alacritty",
+      "workspace": 3,
+      "launchAtBoot": false
+    },
+    {
+      "id": "obsidian",
+      "match": "obsidian",
+      "workspace": 4,
+      "silent": true,
+      "launchAtBoot": false
+    }
+  ]
+}
