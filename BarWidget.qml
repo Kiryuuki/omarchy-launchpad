@@ -12,9 +12,12 @@ BarWidget {
   readonly property string fontFam: root.bar ? root.bar.fontFamily : Style.font.family
 
   property bool menuOpen: false
-
-  // Live copy of the user's launchpad.json, so the menu reflects current config.
   property var entries: []
+
+  // Give the bar a real size so the widget is visible (working widgets bind
+  // implicitWidth/Height to the button).
+  implicitWidth: button.implicitWidth
+  implicitHeight: button.implicitHeight
 
   function refreshConfig() {
     configProc.running = true
@@ -32,26 +35,20 @@ BarWidget {
 
   Component.onCompleted: refreshConfig()
 
-  // Read ~/.config/omarchy/launchpad.json (user data, separate from plugin code).
   Process {
     id: configProc
     command: ["/usr/bin/python3", (Quickshell.env("HOME") || "") + "/.config/omarchy/plugins/yuuki.launchpad/scripts/read_config.py"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
-        try {
-          root.entries = JSON.parse(text || "[]")
-        } catch (e) {
-          root.entries = []
-        }
+        try { root.entries = JSON.parse(text || "[]") }
+        catch (e) { root.entries = [] }
       }
     }
   }
 
-  // Launch-or-focus a configured app.
   Process { id: launchProc; command: ["true"] }
 
-  // Regenerate Hyprland rules + boot launches from launchpad.json.
   Process {
     id: applyProc
     command: ["/usr/bin/python3", (Quickshell.env("HOME") || "") + "/.config/omarchy/plugins/yuuki.launchpad/scripts/generate.py"]
@@ -62,11 +59,13 @@ BarWidget {
   }
 
   BarIconButton {
-    id: btn
+    id: button
+    anchors.fill: parent
     bar: root.bar
-    text: ""
-    onPressed: function(button) {
-      if (button === Qt.RightButton) return
+    text: "\uf135"
+    tooltipText: "Launchpad: app workspace manager"
+    onPressed: function(b) {
+      if (b === Qt.RightButton) return
       root.menuOpen = !root.menuOpen
     }
   }
