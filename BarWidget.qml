@@ -90,7 +90,7 @@ BarWidget {
     anchorItem: root
     owner: root
     bar: root.bar
-    open: root.menuOpen && !panelLoader.item || !panelLoader.item.opened
+    open: root.menuOpen && !(panelLoader.item && panelLoader.item.opened)
     contentWidth: menu.fittedContentWidth(Style.space(260))
     contentHeight: menu.fittedContentHeight(menuCol.implicitHeight)
 
@@ -175,7 +175,6 @@ BarWidget {
       Button {
         text: "Reload config"
         foreground: root.fg
-        fontFamily: root.fontFam
         horizontalPadding: 8
         verticalPadding: 4
         fontSize: Style.font.bodySmall

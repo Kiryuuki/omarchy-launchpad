@@ -199,7 +199,6 @@ Panel {
         width: parent.width
         placeholderText: "Search installed apps…"
         color: panelRoot.fg
-        font.family: panelRoot.fontFam
         background: Rectangle { color: Qt.darker(panelRoot.bg, 1.2); radius: 4; border.color: Qt.darker(panelRoot.fg, 2); border.width: 1 }
         onTextChanged: filterApps()
         function filterApps() {
@@ -252,8 +251,6 @@ Panel {
                   model: panelRoot.workspaceOptions()
                   textRole: "label"
                   valueRole: "value"
-                  font.family: panelRoot.fontFam
-                  font.pixelSize: Style.font.caption
                   enabled: configured
                   currentIndex: {
                     var entry = panelRoot.entryForCommand(modelData.command)
@@ -276,8 +273,6 @@ Panel {
 
                 CheckBox {
                   text: "Boot"
-                  font.family: panelRoot.fontFam
-                  font.pixelSize: Style.font.caption
                   enabled: configured
                   checked: {
                     var entry = panelRoot.entryForCommand(modelData.command)
@@ -291,8 +286,6 @@ Panel {
 
                 Button {
                   text: configured ? "Remove" : "Add"
-                  font.family: panelRoot.fontFam
-                  font.pixelSize: Style.font.caption
                   Layout.preferredWidth: Style.space(64)
                   onClicked: {
                     var entry = panelRoot.entryForCommand(modelData.command)
@@ -329,20 +322,14 @@ Panel {
 
         Button {
           text: "Save"
-          font.family: panelRoot.fontFam
-          font.pixelSize: Style.font.bodySmall
           onClicked: panelRoot.save()
         }
         Button {
           text: "Apply now"
-          font.family: panelRoot.fontFam
-          font.pixelSize: Style.font.bodySmall
           onClicked: panelRoot.applyNow()
         }
         Button {
           text: "Reload config"
-          font.family: panelRoot.fontFam
-          font.pixelSize: Style.font.bodySmall
           onClicked: panelRoot.reloadRules()
         }
       }
